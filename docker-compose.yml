@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: my-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Adnan@119
+      MYSQL_DATABASE: myproject
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"  # correct order
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend   # add same network
+
+  app:
+    build: .
+    container_name: springboot-app
+    depends_on:
+      - mysql
+    ports:
+      - "2004:2004"
+    environment:
+      DATABASE_URL: jdbc:mysql://mysql:3306/myproject
+      DB_USER: user
+      DB_PASS: password
+      DB_DRIVER: com.mysql.cj.jdbc.Driver
+    networks:
+      - backend   # same network
+
+networks:
+  backend:
+
+volumes:
+  mysql_data:
